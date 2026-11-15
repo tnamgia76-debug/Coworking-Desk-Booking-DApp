@@ -10,6 +10,9 @@ import {
   CONTRACT_ADDRESS,
   CONTRACT_ABI,
   CHAIN_ID,
+  NETWORK_NAME,
+  NETWORK_LABEL,
+  EXPLORER_URL,
 } from "./contract";
 
 import "./App.css";
@@ -59,7 +62,7 @@ async function getProvider() {
 
   if (network.chainId !== CHAIN_ID) {
     throw new Error(
-      "Switch this site's wallet network to Coworking Local (31337), then try again."
+      `Switch this site's wallet network to ${NETWORK_NAME} (${CHAIN_ID.toString()}), then try again.`
     );
   }
 
@@ -67,7 +70,7 @@ async function getProvider() {
 
   if (code === "0x") {
     throw new Error(
-      "Contract not found. Check that Hardhat is running and the contract is deployed at the configured address."
+      `Contract not found on ${NETWORK_NAME}. Check the configured deployment address.`
     );
   }
 
@@ -320,7 +323,7 @@ export default function App() {
           {connecting
             ? "CONNECTING…"
             : account
-              ? `LOCAL · ${shorten(account)}`
+              ? `${NETWORK_LABEL} · ${shorten(account)}`
               : "CONNECT WALLET"}
         </button>
       </header>
@@ -381,7 +384,7 @@ export default function App() {
 
             {!account && (
               <p className="room-note">
-                Connect your wallet on Coworking Local to load availability.
+                Connect your wallet on {NETWORK_NAME} to load availability.
               </p>
             )}
 
@@ -484,7 +487,7 @@ export default function App() {
 
               <div>
                 <dt>Network</dt>
-                <dd>Hardhat Local</dd>
+                <dd>{NETWORK_NAME}</dd>
               </div>
             </dl>
 
@@ -507,7 +510,7 @@ export default function App() {
             </button>
 
             <p className="demo-note">
-              Local test network · Uses test ETH.
+              {NETWORK_NAME} test network · Uses test ETH.
               Bookings are stored in the smart contract.
             </p>
 
@@ -523,6 +526,18 @@ export default function App() {
                 <p>Paid: {confirmation.amount} ETH + gas</p>
                 <p>Customer: {confirmation.customer}</p>
                 <p>Transaction: {confirmation.hash}</p>
+
+                {EXPLORER_URL && (
+                  <p>
+                    <a
+                      href={`${EXPLORER_URL}/tx/${confirmation.hash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View transaction on Etherscan ↗
+                    </a>
+                  </p>
+                )}
               </div>
             )}
           </aside>
